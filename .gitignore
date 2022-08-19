@@ -2,3 +2,5 @@ venv
 data
 *.pyc
 __pycache__
+
+nsim.py
