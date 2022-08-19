@@ -50,12 +50,9 @@ def smooth(neurogram: np.ndarray, window_size=32, overlap=0.5) -> np.ndarray:
 
 
 def rebin(x: np.ndarray, factor: float = 0.1):
-    def _rebin(a, shape):
-        sh = shape[0], a.shape[0] // shape[0], shape[1], a.shape[1] // shape[1]
-        return a.reshape(sh).sum(-1).sum(1)
-
-    return _rebin(x, (x.shape[0], int(x.shape[1] * factor)))
-
+    shape = x.shape[0], int(x.shape[1] * factor)
+    sh = shape[0], x.shape[0] // shape[0], shape[1], x.shape[1] // shape[1]
+    return x.reshape(sh).sum(-1).sum(1)
 
 def plot_spectrogram(x: np.ndarray, ax: plt.axis = None, dt=100e-6) -> None:
     if ax is None:
@@ -110,7 +107,7 @@ if __name__ == "__main__":
 
     names = sorted(list(neurograms.keys()))
     distances = np.zeros((3, len(names), len(names)))
-    for (a,b) in combinations(neurograms.keys(), 2):
+    for (a,b) in combinations(names, 2):
         ai = names.index(a)
         bi = names.index(b)
         for i in range(len(KERNELS)):
@@ -121,4 +118,3 @@ if __name__ == "__main__":
         data = pd.DataFrame(distances[i], index=names, columns=names)
         print(KERNELS[i][0])
         print(data)
-    
